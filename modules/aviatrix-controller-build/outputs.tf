@@ -1,5 +1,5 @@
 output private_ip {
-  value       = aws_instance.aviatrixcontroller.private_ip
+  value       = aws_instance.aviatrix_controller.private_ip
   description = "Private IP of the controller"
 }
 
@@ -19,6 +19,6 @@ output subnet_id {
 }
 
 output security_group_id {
-  value       = aws_security_group.AviatrixSecurityGroup.id
+  value       = aws_security_group.aviatrix_security_group.id
   description = "Security group id used by Aviatrix controller"
 }

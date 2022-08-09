@@ -1,4 +1,4 @@
-module aviatrix_controller_iam_roles {
+module "aviatrix_controller_iam_roles" {
   count                          = var.create_iam_roles ? 1 : 0
   source                         = "./modules/aviatrix-controller-iam-roles"
   name_prefix                    = var.iam_roles_name_prefix
@@ -6,10 +6,9 @@ module aviatrix_controller_iam_roles {
   app_role_name                  = var.app_role_name
   external_controller_account_id = var.external_controller_account_id
   secondary_account_ids          = var.secondary_account_ids
-  tags                           = var.iam_roles_tags
 }
 
-module aviatrix_controller_build {
+module "aviatrix_controller_build" {
   source                 = "./modules/aviatrix-controller-build"
   availability_zone      = var.availability_zone
   vpc_cidr               = var.vpc_cidr
@@ -31,9 +30,9 @@ module aviatrix_controller_build {
   tags                   = var.controller_tags
 }
 
-data aws_caller_identity current {}
+data "aws_caller_identity" "current" {}
 
-module aviatrix_controller_initialize {
+module "aviatrix_controller_initialize" {
   source                      = "./modules/aviatrix-controller-initialize"
   controller_launch_wait_time = var.controller_launch_wait_time
   aws_account_id              = data.aws_caller_identity.current.account_id

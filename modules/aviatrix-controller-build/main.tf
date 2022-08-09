@@ -1,4 +1,4 @@
-resource aws_vpc controller_vpc {
+resource "aws_vpc" "controller_vpc" {
   count      = var.use_existing_vpc == false ? 1 : 0
   cidr_block = var.vpc_cidr
   tags = {
@@ -6,11 +6,11 @@ resource aws_vpc controller_vpc {
   }
 }
 
-data aws_vpc controller_vpc {
+data "aws_vpc" "controller_vpc" {
   id = var.vpc_id != "" ? var.vpc_id : aws_vpc.controller_vpc[0].id
 }
 
-resource aws_internet_gateway igw {
+resource "aws_internet_gateway" "igw" {
   count  = var.use_existing_vpc == false ? 1 : 0
   vpc_id = aws_vpc.controller_vpc[0].id
   tags = {
@@ -18,7 +18,7 @@ resource aws_internet_gateway igw {
   }
 }
 
-resource aws_route_table public {
+resource "aws_route_table" "public" {
   count  = var.use_existing_vpc == false ? 1 : 0
   vpc_id = aws_vpc.controller_vpc[0].id
   tags = {
@@ -26,7 +26,7 @@ resource aws_route_table public {
   }
 }
 
-resource aws_route public_internet_gateway {
+resource "aws_route" "public_internet_gateway" {
   count                  = var.use_existing_vpc == false ? 1 : 0
   route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
@@ -36,7 +36,7 @@ resource aws_route public_internet_gateway {
   }
 }
 
-resource aws_subnet controller_subnet {
+resource "aws_subnet" "controller_subnet" {
   count             = var.use_existing_vpc == false ? 1 : 0
   vpc_id            = aws_vpc.controller_vpc[0].id
   cidr_block        = var.subnet_cidr
@@ -46,25 +46,25 @@ resource aws_subnet controller_subnet {
   }
 }
 
-resource aws_route_table_association rta {
+resource "aws_route_table_association" "rta" {
   count          = var.use_existing_vpc == false ? 1 : 0
   subnet_id      = aws_subnet.controller_subnet[0].id
   route_table_id = aws_route_table.public[0].id
 }
 
-resource tls_private_key key_pair_material {
+resource "tls_private_key" "key_pair_material" {
   count     = var.use_existing_keypair == false ? 1 : 0
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource aws_key_pair copilot_key_pair {
+resource "aws_key_pair" "copilot_key_pair" {
   count      = var.use_existing_keypair == false ? 1 : 0
   key_name   = var.keypair
   public_key = tls_private_key.key_pair_material[0].public_key_openssh
 }
 
-resource aws_security_group AviatrixSecurityGroup {
+resource "aws_security_group" "aviatrix_security_group" {
   name        = "${local.name_prefix}AviatrixSecurityGroup"
   description = "Aviatrix - Controller Security Group"
   vpc_id      = var.use_existing_vpc == false ? aws_vpc.controller_vpc[0].id : var.vpc_id
@@ -74,37 +74,37 @@ resource aws_security_group AviatrixSecurityGroup {
   })
 }
 
-resource aws_security_group_rule ingress_rule {
+resource "aws_security_group_rule" "ingress_rule" {
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = var.incoming_ssl_cidrs
-  security_group_id = aws_security_group.AviatrixSecurityGroup.id
+  security_group_id = aws_security_group.aviatrix_security_group.id
 }
 
-resource aws_security_group_rule egress_rule {
+resource "aws_security_group_rule" "egress_rule" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.AviatrixSecurityGroup.id
+  security_group_id = aws_security_group.aviatrix_security_group.id
 }
 
-resource aws_eip controller_eip {
+resource "aws_eip" "controller_eip" {
   vpc   = true
   tags  = local.common_tags
 }
 
-resource aws_eip_association eip_assoc {
-  instance_id   = aws_instance.aviatrixcontroller.id
+resource "aws_eip_association" "eip_assoc" {
+  instance_id   = aws_instance.aviatrix_controller.id
   allocation_id = aws_eip.controller_eip.id
 }
 
-resource aws_network_interface eni_controller {
+resource "aws_network_interface" "eni_controller" {
   subnet_id       = var.use_existing_vpc == false ? aws_subnet.controller_subnet[0].id : var.subnet_id
-  security_groups = [aws_security_group.AviatrixSecurityGroup.id]
+  security_groups = [aws_security_group.aviatrix_security_group.id]
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}controller_network_interface"
   })
@@ -113,11 +113,11 @@ resource aws_network_interface eni_controller {
   }
 }
 
-data aws_subnet controller_subnet {
+data "aws_subnet" "controller_subnet" {
   id = var.use_existing_vpc == false ? aws_subnet.controller_subnet[0].id : var.subnet_id
 }
 
-resource aws_instance aviatrixcontroller {
+resource "aws_instance" "aviatrix_controller" {
   ami                     = local.ami_id
   instance_type           = var.instance_type
   key_name                = var.keypair

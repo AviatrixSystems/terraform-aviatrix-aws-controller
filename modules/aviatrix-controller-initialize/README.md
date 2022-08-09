@@ -1,62 +1,35 @@
-## Aviatrix - Terraform Modules - Initialize Controller
+# Aviatrix - Terraform Modules - Initialize Controller
 
-### Description
+## Description
 
 This Terraform module initializes a newly created Aviatrix Controller by running local Python code.
 
-> **NOTE:** Please properly fill "depends_on" with resources and modules, such as internet gateway, route table, route,
-> route table association, aviatrix-controller-build, etc. When destroying the controller, a controller API will be
-> called to clean up the security groups. If the controller lost the internet access before the API call, the destroy
-> process would hang.
+> **NOTE:** In the first step of destroying a controller, a controller API will be called to delete the security groups 
+> added during the initialization. If the controller loses the internet access before the API call, the security groups 
+> won't be properly deleted. Therefore, please make sure the resources on which the internet access depends will be 
+> destroyed after the security groups are deleted. For example, please properly fill "depends_on" with resources and 
+> modules, such as internet gateway, route table, route, route table association, aviatrix-controller-build, etc.
 
-### Variables
+## Variables
 
-- **admin_email**
+The following variables are required:
 
-  The administrator's email address. This email address will be used for password recovery as well as for notifications
-  from the Controller.
+| Variable  | Description |
+| --------- | ----------- |
+| public_ip | The Controller's public IP address |
+| private_ip | The Controller's private IP address |
+| admin_email | The administrator's email address |
+| admin_password | The administrator's password |
+| access_account_name | Access account name |
+| access_account_email | Access account email |
+| aws_account_id | The AWS account ID |
 
-- **admin_password**
+The following variables are optional:
 
-  The administrator's password. The default password is the Controller's private IP addresses. It will be changed to this
-  value as part of the initialization.
-
-- **private_ip**
-
-  The Controller's private IP address.
-
-- **public_ip**
-
-  The Controller's public IP address.
-
-- **access_account_name**
-
-  Access account name.
-
-- **access_account_email**
-
-  Access account email.
-
-- **aws_account_id**
-
-  The AWS account ID.
-
-- **customer_license_id**
-
-  The customer license ID, optional. Required if using a BYOL controller.
-  
-- **controller_version**
-  
-  The version to which you want to initialize the Aviatrix controller.
-    
-- **controller_launch_wait_time**
- 
-  Time in second to wait for controller to be up. Default value: 210.
-
-- **ec2_role_name**
-
-  EC2 role name. Default value: "aviatrix-role-ec2".
-
-- **app_role_name**
-
-  APP role name. Default value: "aviatrix-role-app".
+| Variable  | Description | Default |
+| --------- | ----------- | ------- |
+| controller_launch_wait_time | Time in second to wait for controller to be up | 210 |
+| customer_license_id |The customer license ID. Required if using a BYOL controller.| "" |
+| controller_version | The controller version | "latest" |
+| ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
+| app_role_name | APP role name | "aviatrix-role-app" |

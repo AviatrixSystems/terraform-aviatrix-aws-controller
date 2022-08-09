@@ -21,6 +21,7 @@ def disable_controller_sg_mgmt(
         api_endpoint_url=api_endpoint_url,
         request_method="POST",
         payload=data,
+        timeout=60
     )
 
     return response

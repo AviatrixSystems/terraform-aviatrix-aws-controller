@@ -1,97 +1,97 @@
-variable availability_zone {
+variable "availability_zone" {
   type        = string
   description = "Availability zone"
   default     = ""
 }
 
-variable vpc_cidr {
+variable "vpc_cidr" {
   type        = string
   description = "VPC in which you want launch Aviatrix controller"
   default     = "10.0.0.0/16"
 }
 
-variable subnet_cidr {
+variable "subnet_cidr" {
   type        = string
   description = "Subnet in which you want launch Aviatrix controller"
   default     = "10.0.1.0/24"
 }
 
-variable use_existing_vpc {
+variable "use_existing_vpc" {
   type        = bool
   description = "Flag to indicate whether to use an existing VPC"
   default     = false
 }
 
-variable vpc_id {
+variable "vpc_id" {
   type        = string
   description = "VPC ID, required when use_existing_vpc is true"
   default     = ""
 }
 
-variable subnet_id {
+variable "subnet_id" {
   type        = string
   description = "Subnet ID, only required when use_existing_vpc is true"
   default     = ""
 }
 
-variable use_existing_keypair {
+variable "use_existing_keypair" {
   type        = bool
   default     = false
   description = "Flag to indicate whether to use an existing key pair"
 }
 
-variable keypair {
+variable "keypair" {
   type        = string
   description = "Key pair name"
 }
 
-variable ec2role {
+variable "ec2role" {
   type        = string
   description = "EC2 role for controller"
 }
 
-variable tags {
+variable "tags" {
   type        = map(string)
   description = "Map of common tags which should be used for module resources"
   default     = {}
 }
 
-variable termination_protection {
+variable "termination_protection" {
   type        = bool
   description = "Enable/disable switch for termination protection"
   default     = true
 }
 
-variable incoming_ssl_cidrs {
+variable "incoming_ssl_cidrs" {
   type        = list(string)
   description = "Incoming cidr for security group used by controller"
 }
 
-variable root_volume_size {
+variable "root_volume_size" {
   type        = number
   description = "Root volume disk size for controller"
   default     = 64
 }
 
-variable root_volume_type {
+variable "root_volume_type" {
   type        = string
   description = "Root volume type for controller"
   default     = "gp2"
 }
 
-variable instance_type {
+variable "instance_type" {
   type        = string
   description = "Controller instance size"
   default     = "t3.large"
 }
 
-variable name_prefix {
+variable "name_prefix" {
   type        = string
   description = "Additional name prefix for your environment resources"
   default     = ""
 }
 
-variable type {
+variable "type" {
   default     = "MeteredPlatinumCopilot"
   type        = string
   description = "Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
@@ -102,17 +102,17 @@ variable type {
   }  
 }
 
-variable controller_name {
+variable "controller_name" {
   type        = string
   description = "Name of controller that will be launched. If not set, default name will be used."
   default     = "AviatrixController"
 }
 
-data aws_region current {}
+data "aws_region" "current" {}
 
-data aws_availability_zones all {}
+data "aws_availability_zones" "all" {}
 
-data aws_ec2_instance_type_offering offering {
+data "aws_ec2_instance_type_offering" "offering" {
   for_each = toset(data.aws_availability_zones.all.names)
 
   filter {
@@ -139,7 +139,10 @@ locals {
   images_vpnmetered             = jsondecode(data.http.avx_iam_id.response_body).VPNMetered
   images_custom                 = jsondecode(data.http.avx_iam_id.response_body).Custom
   ami_id                        = lookup(local.ami_id_map, lower(var.type), null)
-  ami_id_map                    = {
+  default_az                    = keys({ for az, details in data.aws_ec2_instance_type_offering.offering : az => details.instance_type if details.instance_type == var.instance_type })[0]
+  availability_zone             = var.availability_zone != "" ? var.availability_zone : local.default_az
+
+  ami_id_map = {
     byol                   = local.images_byol[data.aws_region.current.name],
     metered                = local.images_metered[data.aws_region.current.name],
     meteredplatinum        = local.images_meteredplatinum[data.aws_region.current.name],
@@ -152,11 +155,9 @@ locals {
       module    = "aviatrix-controller-build"
       Createdby = "Terraform+Aviatrix"
   })
-  default_az        = keys({ for az, details in data.aws_ec2_instance_type_offering.offering : az => details.instance_type if details.instance_type == var.instance_type })[0]
-  availability_zone = var.availability_zone != "" ? var.availability_zone : local.default_az
 }
 
-data http avx_iam_id {
+data "http" "avx_iam_id" {
   url = "https://s3-us-west-2.amazonaws.com/aviatrix-download/AMI_ID/ami_id.json"
   request_headers = {
     "Accept" = "application/json"

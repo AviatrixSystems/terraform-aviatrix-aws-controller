@@ -1,51 +1,38 @@
-## Launch an Aviatrix Controller in AWS
+# Launch an Aviatrix Controller in AWS
 
-### Description
+## Description
 This Terraform module allows you to launch an Aviatrix Controller in AWS and create an access account.
 
-### Procedures for Building and Initializing a Controller in AWS
+## Usage examples
 
-#### 1. Install required dependencies
+See [examples](./examples/README.md)
 
-Install required dependencies.
+## Available Submodules
 
+| Module  | Description | Prerequisites |
+| ------- | ----------- | ------------- |
+| [aviatrix-controller-iam-roles](./modules/aviatrix-controller-iam-roles) | Builds the IAM roles required for controller to connect with this AWS account | None |
+| [aviatrix-controller-build](./modules/aviatrix-controller-build) | Builds the controller | IAM roles created|
+| [aviatrix-controller-initialize](./modules/aviatrix-controller-initialize) | Initializes the controller (upgrade, set admin email, set admin password, create access account) | Aviatrix Controller |
+
+## Prerequisites
+
+1. [Terraform 0.13](https://www.terraform.io/downloads.html) - execute Terraform scripts
+2. [Python3](https://www.python.org/downloads/) - execute Python scripts
+3. Create the Python virtual environment and install required dependencies in the terminal
+``` shell
+ python3 -m venv venv
+```
+This command will create the virtual environment. In order to use the virtual environment, it needs to be activated by the following command
+``` shell
+ source venv/bin/activate
+```
+In order to run Python scripts, dependencies listed in `requirements.txt` need to be stalled by the following command
 ``` shell
  pip install -r requirements.txt
 ```
 
-#### 2. Applying Terraform configuration
-
-Build and initialize the Aviatrix Controller
-
-```hcl
-module "aviatrix_controller_aws" {
-  source               = "AviatrixSystems/aws-controller/aviatrix"
-  keypair              = "<<< KEY PAIR NAME >>>"
-  incoming_ssl_cidrs   = ["<<< TRUSTED MANAGEMENT CIDR 1 >>>", ...]
-  admin_password       = "<<< ADMIN PASSWORD >>>"
-  admin_email          = "<<< ADMIN EMAIL >>>"
-  access_account_name  = "<<< ACCESS ACCOUNT NAME >>>"
-  access_account_email = "<<< ACCESS ACCOUNT EMAIL >>>"
-  customer_license_id  = "<<< CUSTOMER LICENSE ID >>>"
-}
-
-output "public_ip" {
-  value = module.aviatrix_controller_aws.public_ip
-}
-
-output "private_ip" {
-  value = module.aviatrix_controller_aws.private_ip
-}
-```
-
-*Execute*
-
-```shell
-terraform init
-terraform apply
-```
-
-### Variables
+## Variables
 
 The following variables are required:
 
@@ -63,7 +50,6 @@ The following variables are optional:
 | Variable  | Description | Default |
 | --------- | ----------- | ------- |
 | create_iam_roles | Flag to indicate whether to create IAM roles or not | true |
-| iam_roles_tags | Map of common tags used for IAM roles | {} |
 | iam_roles_name_prefix | Name prefix for EC2 role name and APP role name | "" |
 | ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
 | app_role_name | APP role name | "aviatrix-role-app" |
@@ -88,7 +74,7 @@ The following variables are optional:
 | controller_version | Controller version | "latest" |
 | customer_license_id | Customer license ID | "" |
 
-### Outputs
+## Outputs
 
 | Variable  | Description |
 | --------- | ----------- |
@@ -97,11 +83,3 @@ The following variables are optional:
 | vpc_id | VPC where Aviatrix controller was built |
 | subnet_id | Subnet where Aviatrix controller was built |
 | security_group_id | Controller security group ID |
-
-### Available Modules
-
-| Module  | Description | Prerequisites |
-| ------- | ----------- | ------------- |
-| [aviatrix-controller-iam-roles](./modules/aviatrix-controller-iam-roles) | Builds the IAM roles required for Aviatrix to connect with this AWS account | None |
-| [aviatrix-controller-build](./modules/aviatrix-controller-build) | Builds the controller | IAM roles created|
-| [aviatrix-controller-initialize](./modules/aviatrix-controller-initialize) | Initializes the Controller (Upgrade, set admin e-mail, set admin password, create access account) | Aviatrix Controller |
