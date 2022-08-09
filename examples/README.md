@@ -7,7 +7,6 @@ This document contains examples of different use cases. For full details on avai
 ```hcl
 module "aviatrix_controller_aws" {
   source               = "AviatrixSystems/aws-controller/aviatrix"
-  keypair              = "<<< KEY PAIR NAME >>>"
   incoming_ssl_cidrs   = ["<<< TRUSTED MANAGEMENT CIDR 1 >>>", ...]
   admin_password       = "<<< ADMIN PASSWORD >>>"
   admin_email          = "<<< ADMIN EMAIL >>>"
@@ -28,13 +27,12 @@ output "private_ip" {
 ## 2. Launching and initializing a controller without creating IAM roles
 
 > **NOTE:** IAM roles are still required for building the controller. In the following example, default EC2 role name
-> APP role name are used.
+> and APP role name are used.
 
 ```hcl
 module "aviatrix_controller_aws" {
   source               = "AviatrixSystems/aws-controller/aviatrix"
   create_iam_roles     = false
-  keypair              = "<<< KEY PAIR NAME >>>"
   incoming_ssl_cidrs   = ["<<< TRUSTED MANAGEMENT CIDR 1 >>>", ...]
   admin_password       = "<<< ADMIN PASSWORD >>>"
   admin_email          = "<<< ADMIN EMAIL >>>"
@@ -62,7 +60,6 @@ output "private_ip" {
 ```hcl
 module "aviatrix_controller_aws" {
   source               = "AviatrixSystems/aws-controller/aviatrix"
-  keypair              = "<<< KEY PAIR NAME >>>"
   use_existing_vpc     = true
   vpc_id               = "<<< VPC ID >>>"
   subnet_id            = "<<< SUBNET ID>>>"

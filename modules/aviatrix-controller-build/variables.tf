@@ -40,14 +40,16 @@ variable "use_existing_keypair" {
   description = "Flag to indicate whether to use an existing key pair"
 }
 
-variable "keypair" {
+variable "key_pair_name" {
   type        = string
   description = "Key pair name"
+  default     = ""
 }
 
-variable "ec2role" {
+variable "ec2_role_name" {
   type        = string
   description = "EC2 role for controller"
+  default     = ""
 }
 
 variable "tags" {
@@ -105,7 +107,7 @@ variable "type" {
 variable "controller_name" {
   type        = string
   description = "Name of controller that will be launched. If not set, default name will be used."
-  default     = "AviatrixController"
+  default     = ""
 }
 
 data "aws_region" "current" {}
@@ -132,6 +134,9 @@ data "aws_ec2_instance_type_offering" "offering" {
 
 locals {
   name_prefix                   = var.name_prefix != "" ? "${var.name_prefix}_" : ""
+  controller_name               = var.controller_name != "" ? var.controller_name : "${local.name_prefix}AviatrixController"
+  key_pair_name                 = var.key_pair_name != "" ? var.key_pair_name : "controller_kp"
+  ec2_role_name                 = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"
   images_byol                   = jsondecode(data.http.avx_iam_id.response_body).BYOL
   images_metered                = jsondecode(data.http.avx_iam_id.response_body).Metered
   images_meteredplatinum        = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinum

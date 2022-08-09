@@ -7,13 +7,13 @@ variable "name_prefix" {
 variable "ec2_role_name" {
   type        = string
   description = "EC2 role name"
-  default     = "aviatrix-role-ec2"
+  default     = ""
 }
 
 variable "app_role_name" {
   type        = string
   description = "APP role name"
-  default     = "aviatrix-role-app"
+  default     = ""
 }
 
 variable "external_controller_account_id" {
@@ -32,8 +32,8 @@ data "aws_region" "current" {}
 
 locals {
   name_prefix          = var.name_prefix != "" ? "${var.name_prefix}-" : ""
-  ec2_role_name        = var.ec2_role_name != "aviatrix-role-ec2" ? var.ec2_role_name : "${local.name_prefix}aviatrix-role-ec2"
-  app_role_name        = var.app_role_name != "aviatrix-role-app" ? var.app_role_name : "${local.name_prefix}aviatrix-role-app"
+  ec2_role_name        = var.ec2_role_name != "" ? var.ec2_role_name : "${local.name_prefix}aviatrix-role-ec2"
+  app_role_name        = var.app_role_name != "" ? var.app_role_name : "${local.name_prefix}aviatrix-role-app"
   arn_partition        = element(split("-", data.aws_region.current.name), 0) == "cn" ? "aws-cn" : (element(split("-", data.aws_region.current.name), 1) == "gov" ? "aws-us-gov" : "aws")
   is_aws_cn            = element(split("-", data.aws_region.current.name), 0) == "cn" ? ".cn" : ""
   other_account_id     = data.aws_caller_identity.current.account_id

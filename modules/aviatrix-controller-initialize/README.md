@@ -22,12 +22,12 @@ The following variables are required:
 | admin_password | The administrator's password |
 | access_account_name | Access account name |
 | access_account_email | Access account email |
-| aws_account_id | The AWS account ID |
 
 The following variables are optional:
 
 | Variable  | Description | Default |
 | --------- | ----------- | ------- |
+| aws_account_id | The AWS account ID | Current caller ID |
 | controller_launch_wait_time | Time in second to wait for controller to be up | 210 |
 | customer_license_id |The customer license ID. Required if using a BYOL controller.| "" |
 | controller_version | The controller version | "latest" |

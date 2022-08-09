@@ -11,6 +11,7 @@ variable "controller_launch_wait_time" {
 variable "aws_account_id" {
   type        = string
   description = "aws account id"
+  default     = ""
 }
 
 variable "public_ip" {
@@ -58,17 +59,18 @@ variable "customer_license_id" {
 variable "ec2_role_name" {
   type        = string
   description = "EC2 role name"
-  default     = "aviatrix-role-ec2"
+  default     = ""
 }
 
 variable "app_role_name" {
   type        = string
   description = "APP role name"
-  default     = "aviatrix-role-app"
+  default     = ""
 }
 
 locals {
-  ec2_role_name       = var.ec2_role_name != "aviatrix-role-ec2" ? var.ec2_role_name : "aviatrix-role-ec2"
-  app_role_name       = var.app_role_name != "aviatrix-role-app" ? var.app_role_name : "aviatrix-role-app"
-  aws_partition       = element(split("-", data.aws_region.current.name), 0) == "cn" ? "aws-cn" : "aws"
+  aws_account_id = var.aws_account_id == "" ? data.aws_caller_identity.current.account_id : var.aws_account_id
+  ec2_role_name  = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"
+  app_role_name  = var.app_role_name != "" ? var.app_role_name : "aviatrix-role-app"
+  aws_partition  = element(split("-", data.aws_region.current.name), 0) == "cn" ? "aws-cn" : "aws"
 }

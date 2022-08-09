@@ -13,13 +13,13 @@ variable "iam_roles_name_prefix" {
 variable "ec2_role_name" {
   type        = string
   description = "EC2 role name"
-  default     = "aviatrix-role-ec2"
+  default     = ""
 }
 
 variable "app_role_name" {
   type        = string
   description = "APP role name"
-  default     = "aviatrix-role-app"
+  default     = ""
 }
 
 variable "external_controller_account_id" {
@@ -76,9 +76,10 @@ variable "use_existing_keypair" {
   default     = false
 }
 
-variable "keypair" {
+variable "key_pair_name" {
   type        = string
   description = "Key pair name"
+  default     = ""
 }
 
 variable "controller_tags" {
@@ -136,7 +137,13 @@ variable "type" {
 variable "controller_name" {
   type        = string
   description = "Name of controller that will be launched."
-  default     = "AviatrixController"
+  default     = ""
+}
+
+variable "aws_account_id" {
+  type        = string
+  description = "aws account id"
+  default     = ""
 }
 
 variable "controller_launch_wait_time" {
@@ -175,4 +182,9 @@ variable "customer_license_id" {
   type        = string
   description = "aviatrix customer license id"
   default     = ""
+}
+
+locals {
+  ec2_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_ec2_name : var.ec2_role_name
+  app_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_app_name : var.app_role_name
 }

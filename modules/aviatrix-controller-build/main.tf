@@ -1,5 +1,5 @@
 resource "aws_vpc" "controller_vpc" {
-  count      = var.use_existing_vpc == false ? 1 : 0
+  count      = var.use_existing_vpc ? 0 : 1
   cidr_block = var.vpc_cidr
   tags = {
     Name = "${local.name_prefix}controller_vpc"
@@ -11,7 +11,7 @@ data "aws_vpc" "controller_vpc" {
 }
 
 resource "aws_internet_gateway" "igw" {
-  count  = var.use_existing_vpc == false ? 1 : 0
+  count  = var.use_existing_vpc ? 0 : 1
   vpc_id = aws_vpc.controller_vpc[0].id
   tags = {
     Name = "${local.name_prefix}controller_igw"
@@ -19,7 +19,7 @@ resource "aws_internet_gateway" "igw" {
 }
 
 resource "aws_route_table" "public" {
-  count  = var.use_existing_vpc == false ? 1 : 0
+  count  = var.use_existing_vpc ? 0 : 1
   vpc_id = aws_vpc.controller_vpc[0].id
   tags = {
     Name = "${local.name_prefix}controller_rt"
@@ -27,7 +27,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route" "public_internet_gateway" {
-  count                  = var.use_existing_vpc == false ? 1 : 0
+  count                  = var.use_existing_vpc ? 0 : 1
   route_table_id         = aws_route_table.public[0].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.igw[0].id
@@ -37,7 +37,7 @@ resource "aws_route" "public_internet_gateway" {
 }
 
 resource "aws_subnet" "controller_subnet" {
-  count             = var.use_existing_vpc == false ? 1 : 0
+  count             = var.use_existing_vpc ? 0 : 1
   vpc_id            = aws_vpc.controller_vpc[0].id
   cidr_block        = var.subnet_cidr
   availability_zone = local.availability_zone
@@ -47,27 +47,27 @@ resource "aws_subnet" "controller_subnet" {
 }
 
 resource "aws_route_table_association" "rta" {
-  count          = var.use_existing_vpc == false ? 1 : 0
+  count          = var.use_existing_vpc ? 0 : 1
   subnet_id      = aws_subnet.controller_subnet[0].id
   route_table_id = aws_route_table.public[0].id
 }
 
 resource "tls_private_key" "key_pair_material" {
-  count     = var.use_existing_keypair == false ? 1 : 0
+  count     = var.use_existing_keypair ? 0 : 1
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
-resource "aws_key_pair" "copilot_key_pair" {
-  count      = var.use_existing_keypair == false ? 1 : 0
-  key_name   = var.keypair
+resource "aws_key_pair" "controller_key_pair" {
+  count      = var.use_existing_keypair ? 0 : 1
+  key_name   = local.key_pair_name
   public_key = tls_private_key.key_pair_material[0].public_key_openssh
 }
 
 resource "aws_security_group" "aviatrix_security_group" {
   name        = "${local.name_prefix}AviatrixSecurityGroup"
   description = "Aviatrix - Controller Security Group"
-  vpc_id      = var.use_existing_vpc == false ? aws_vpc.controller_vpc[0].id : var.vpc_id
+  vpc_id      = var.use_existing_vpc ? var.vpc_id : aws_vpc.controller_vpc[0].id
 
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}controller_security_group"
@@ -103,7 +103,7 @@ resource "aws_eip_association" "eip_assoc" {
 }
 
 resource "aws_network_interface" "eni_controller" {
-  subnet_id       = var.use_existing_vpc == false ? aws_subnet.controller_subnet[0].id : var.subnet_id
+  subnet_id       = var.use_existing_vpc ? var.subnet_id : aws_subnet.controller_subnet[0].id
   security_groups = [aws_security_group.aviatrix_security_group.id]
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}controller_network_interface"
@@ -114,14 +114,14 @@ resource "aws_network_interface" "eni_controller" {
 }
 
 data "aws_subnet" "controller_subnet" {
-  id = var.use_existing_vpc == false ? aws_subnet.controller_subnet[0].id : var.subnet_id
+  id = var.use_existing_vpc ? var.subnet_id : aws_subnet.controller_subnet[0].id
 }
 
 resource "aws_instance" "aviatrix_controller" {
   ami                     = local.ami_id
   instance_type           = var.instance_type
-  key_name                = var.keypair
-  iam_instance_profile    = var.ec2role
+  key_name                = local.key_pair_name
+  iam_instance_profile    = local.ec2_role_name
   disable_api_termination = var.termination_protection
   availability_zone       = data.aws_subnet.controller_subnet.availability_zone
 
@@ -136,7 +136,7 @@ resource "aws_instance" "aviatrix_controller" {
   }
 
   tags = merge(local.common_tags, {
-    Name = var.controller_name != "AviatrixController" ? "${var.controller_name}" : "${local.name_prefix}AviatrixController"
+    Name = local.controller_name
   })
 
   lifecycle {

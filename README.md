@@ -38,7 +38,6 @@ The following variables are required:
 
 | Variable  | Description |
 | --------- | ----------- |
-| keypair | Key pair name |
 | incoming_ssl_cidrs | CIDRs allowed for HTTPS access |
 | admin_email | Admin email |
 | admin_password | Admin password |
@@ -62,14 +61,16 @@ The following variables are optional:
 | vpc_id | VPC ID, required when use_existing_vpc is true | "" |
 | subnet_id | Subnet ID, required when use_existing_vpc is true | "" |
 | use_existing_keypair | Flag to indicate whether to use an existing key pair | false |
+| key_pair_name | Key pair name | "controller_kp" |
 | controller_tags | Map of common tags used for controller resources | {} |
 | termination_protection | Flag to indicate whether to enable termination protection | true |
 | root_volume_size | Root volume size for controller | 64 |
 | root_volume_type | Root volume type for controller | "gp2" |
 | instance_type | Controller instance size | "t3.large" |
 | controller_name_prefix | Name prefix for controller resources | "" |
-| type | Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom' | "MeteredPlatinumCopilot" |
 | controller_name | Controller name | "AviatrixController" |
+| type | Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom' | "MeteredPlatinumCopilot" |
+| aws_account_id | The AWS account ID | Current caller ID |
 | controller_launch_wait_time | Controller launch wait time | 210 |
 | controller_version | Controller version | "latest" |
 | customer_license_id | Customer license ID | "" |

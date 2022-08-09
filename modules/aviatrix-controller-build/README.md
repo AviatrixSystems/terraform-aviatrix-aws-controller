@@ -16,8 +16,7 @@ The following variables are required:
 
 | Variable  | Description |
 | --------- | ----------- |
-| keypair | Key pair name |
-| ec2role | EC2 IAM role name |
+
 | incoming_ssl_cidrs | CIDRs allowed for HTTPS access |
 
 The following variables are optional:
@@ -31,12 +30,14 @@ The following variables are optional:
 | vpc_id | VPC ID, required when use_existing_vpc is true | "" |
 | subnet_id | Subnet ID, only required when use_existing_vpc is true | "" |
 | use_existing_keypair | Flag to indicate whether to use an existing key pair | false |
+| key_pair_name | Key pair name | "controller_kp" |
+| ec2_role_name | EC2 IAM role name | "aviatrix-role-ec2" |
 | root_volume_size | The volume size for the controller instance | 64 |
 | root_volume_type | The volume type for the controller instance | "gp2" |
 | instance_type | The instance type for the controller instance | "t3.large" |
 | name_prefix | A prefix to be added to controller resources | "" |
-| type | The license type for the Aviatrix controller. Valid values: "Metered", "MeteredPlatinum", "MeteredPlatinumCopilot", "VPNMetered", "BYOL" or "Custom". | "MeteredPlatinumCopilot" |
 | controller_name | Controller name | "AviatrixController" |
+| type | The license type for the Aviatrix controller. Valid values: "Metered", "MeteredPlatinum", "MeteredPlatinumCopilot", "VPNMetered", "BYOL" or "Custom". | "MeteredPlatinumCopilot" |
 | termination_protection | Flag to indicate whether termination protection is enabled for the controller | true |
 | tags | Map of common tags used for controller resources | {} |
 
