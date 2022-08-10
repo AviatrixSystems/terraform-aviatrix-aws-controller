@@ -27,7 +27,7 @@ This command will create the virtual environment. In order to use the virtual en
 ``` shell
  source venv/bin/activate
 ```
-In order to run Python scripts, dependencies listed in `requirements.txt` need to be stalled by the following command
+In order to run Python scripts, dependencies listed in `requirements.txt` need to be installed. For example, the dependencies can be installed by the following command
 ``` shell
  pip install -r requirements.txt
 ```
