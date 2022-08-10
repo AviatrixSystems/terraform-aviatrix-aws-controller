@@ -14,7 +14,7 @@ output vpc_id {
 }
 
 output subnet_id {
-  value       = data.aws_subnet.controller_subnet
+  value       = data.aws_subnet.controller_subnet.id
   description = "Subnet where Aviatrix controller was built"
 }
 
