@@ -12,7 +12,7 @@ See [examples](https://github.com/AviatrixSystems/terraform-aviatrix-aws-control
 | Module  | Description | Prerequisites |
 | ------- | ----------- | ------------- |
 | aviatrix-controller-iam-roles | Builds the IAM roles required for controller to connect with this AWS account | None |
-| aviatrix-controller-build| Builds the controller | IAM roles created|
+| aviatrix-controller-build | Builds the controller | IAM roles created|
 | aviatrix-controller-initialize | Initializes the controller (upgrade, set admin email, set admin password, create access account) | Aviatrix Controller |
 
 ## Prerequisites
