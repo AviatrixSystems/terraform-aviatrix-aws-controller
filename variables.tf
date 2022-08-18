@@ -184,6 +184,12 @@ variable "customer_license_id" {
   default     = ""
 }
 
+variable "private_mode" {
+  type        = bool
+  description = "Enable private mode"
+  default     = false
+}
+
 locals {
   ec2_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_ec2_name : var.ec2_role_name
   app_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_app_name : var.app_role_name

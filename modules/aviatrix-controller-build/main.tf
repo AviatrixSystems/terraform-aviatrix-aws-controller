@@ -93,13 +93,15 @@ resource "aws_security_group_rule" "egress_rule" {
 }
 
 resource "aws_eip" "controller_eip" {
+  count = var.private_mode ? 0 : 1
   vpc   = true
   tags  = local.common_tags
 }
 
 resource "aws_eip_association" "eip_assoc" {
+  count         = var.private_mode ? 0 : 1
   instance_id   = aws_instance.aviatrix_controller.id
-  allocation_id = aws_eip.controller_eip.id
+  allocation_id = aws_eip.controller_eip[0].id
 }
 
 resource "aws_network_interface" "eni_controller" {

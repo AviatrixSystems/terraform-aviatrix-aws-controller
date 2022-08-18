@@ -28,6 +28,7 @@ module "aviatrix_controller_build" {
   termination_protection = var.termination_protection
   incoming_ssl_cidrs     = var.incoming_ssl_cidrs
   tags                   = var.controller_tags
+  private_mode           = var.private_mode
 }
 
 data "aws_caller_identity" "current" {}

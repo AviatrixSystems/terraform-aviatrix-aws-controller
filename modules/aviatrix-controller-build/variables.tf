@@ -101,13 +101,19 @@ variable "type" {
   validation {
     condition     = contains(["metered", "meteredplatinum", "meteredplatinumcopilot", "vpnmetered", "byol", "custom"], lower(var.type))
     error_message = "Invalid billing type. Choose 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
-  }  
+  }
 }
 
 variable "controller_name" {
   type        = string
   description = "Name of controller that will be launched. If not set, default name will be used."
   default     = ""
+}
+
+variable "private_mode" {
+  type        = string
+  description = "Enable private mode"
+  default     = false
 }
 
 data "aws_region" "current" {}
