@@ -876,7 +876,7 @@ if __name__ == "__main__":
     controller_region = sys.argv[13]
     private_mode = sys.argv[14]
 
-    if private_mode:
+    if private_mode == "true":
         controller_ip = private_ip
     else:
         controller_ip = public_ip
