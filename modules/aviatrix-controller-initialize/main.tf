@@ -1,15 +1,14 @@
 locals {
-  argument_create = format("'%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s'",
+  argument_create = format("'%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s' '%s'",
     var.controller_launch_wait_time, local.aws_account_id, var.public_ip, var.private_ip, var.admin_email,
     var.admin_password, var.access_account_email, var.controller_version, var.access_account_name,
-  var.customer_license_id, local.ec2_role_name, local.app_role_name, local.aws_partition)
+  var.customer_license_id, local.ec2_role_name, local.app_role_name, local.aws_partition, var.private_mode)
 
   argument_destroy = format("'%s' '%s'",
     local.controller_ip, var.admin_password
   )
 
-  private_mode  = var.public_ip == ""
-  controller_ip = local.private_mode ? var.private_ip : var.public_ip
+  controller_ip = var.private_mode ? var.private_ip : var.public_ip
 }
 
 resource "null_resource" "run_script" {

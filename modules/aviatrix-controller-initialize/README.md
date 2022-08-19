@@ -33,3 +33,4 @@ The following variables are optional:
 | controller_version | The controller version | "latest" |
 | ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
 | app_role_name | APP role name | "aviatrix-role-app" |
+| private_mode | Flag to enable private_mode. | false |

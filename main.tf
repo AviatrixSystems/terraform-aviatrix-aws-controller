@@ -47,6 +47,7 @@ module "aviatrix_controller_initialize" {
   controller_version          = var.controller_version
   ec2_role_name               = local.ec2_role_name
   app_role_name               = local.app_role_name
+  private_mode                = var.private_mode
 
   depends_on = [
     module.aviatrix_controller_build

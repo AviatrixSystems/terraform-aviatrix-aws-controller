@@ -874,8 +874,9 @@ if __name__ == "__main__":
     ec2_role_name = sys.argv[11]
     app_role_name = sys.argv[12]
     controller_region = sys.argv[13]
+    private_mode = sys.argv[14]
 
-    if public_ip == "":
+    if private_mode:
         controller_ip = private_ip
     else:
         controller_ip = public_ip

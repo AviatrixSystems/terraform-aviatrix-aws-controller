@@ -69,6 +69,12 @@ variable "app_role_name" {
   default     = ""
 }
 
+variable "private_mode" {
+  type        = string
+  description = "Enable private mode"
+  default     = false
+}
+
 locals {
   aws_account_id = var.aws_account_id == "" ? data.aws_caller_identity.current.account_id : var.aws_account_id
   ec2_role_name  = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"
