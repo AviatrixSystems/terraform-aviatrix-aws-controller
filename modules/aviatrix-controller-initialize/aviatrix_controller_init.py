@@ -875,21 +875,21 @@ if __name__ == "__main__":
     controller_region = sys.argv[13]
 
     event = {
-        "controller_launch_wait_time": int(controller_launch_wait_time),
-        "aws_account_id": aws_account_id,
-        "public_ip": public_ip,
-        "private_ip": private_ip,
+        "controller_launch_wait_time": int(controller_launch_wait_time.replace("'", "")),
+        "aws_account_id": aws_account_id.replace("'", ""),
+        "public_ip": public_ip.replace("'", ""),
+        "private_ip": private_ip.replace("'", ""),
         "aviatrix_api_version": "v1",
         "aviatrix_api_route": "api",
-        "admin_email": admin_email,
-        "new_admin_password": new_admin_password,
-        "controller_init_version": controller_version,
-        "account_email": account_email,
-        "customer_license_id": customer_license_id,
-        "access_account_name": access_account_name,
-        "ec2_role_name": ec2_role_name,
-        "app_role_name": app_role_name,
-        "controller_region": controller_region,
+        "admin_email": admin_email.replace("'", ""),
+        "new_admin_password": new_admin_password.replace("'", ""),
+        "controller_init_version": controller_version.replace("'", ""),
+        "account_email": account_email.replace("'", ""),
+        "customer_license_id": customer_license_id.replace("'", ""),
+        "access_account_name": access_account_name.replace("'", ""),
+        "ec2_role_name": ec2_role_name.replace("'", ""),
+        "app_role_name": app_role_name.replace("'", ""),
+        "controller_region": controller_region.replace("'", ""),
     }
 
     try:
