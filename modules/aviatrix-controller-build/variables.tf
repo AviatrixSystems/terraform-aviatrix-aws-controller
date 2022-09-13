@@ -137,6 +137,7 @@ locals {
   controller_name               = var.controller_name != "" ? var.controller_name : "${local.name_prefix}AviatrixController"
   key_pair_name                 = var.key_pair_name != "" ? var.key_pair_name : "controller_kp"
   ec2_role_name                 = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"
+  is_aws_cn                     = element(split("-", data.aws_region.current.name), 0) == "cn" ? true : false
   images_byol                   = jsondecode(data.http.avx_iam_id.response_body).BYOL
   images_metered                = jsondecode(data.http.avx_iam_id.response_body).Metered
   images_meteredplatinum        = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinum
@@ -149,11 +150,11 @@ locals {
 
   ami_id_map = {
     byol                   = local.images_byol[data.aws_region.current.name],
-    metered                = local.images_metered[data.aws_region.current.name],
-    meteredplatinum        = local.images_meteredplatinum[data.aws_region.current.name],
-    meteredplatinumcopilot = local.images_meteredplatinumcopilot[data.aws_region.current.name],
-    vpnmetered             = local.images_vpnmetered[data.aws_region.current.name],
-    custom                 = local.images_custom[data.aws_region.current.name],
+    metered                = local.is_aws_cn ? null : local.images_metered[data.aws_region.current.name],
+    meteredplatinum        = local.is_aws_cn ? null : local.images_meteredplatinum[data.aws_region.current.name],
+    meteredplatinumcopilot = local.is_aws_cn ? null : local.images_meteredplatinumcopilot[data.aws_region.current.name],
+    vpnmetered             = local.is_aws_cn ? null : local.images_vpnmetered[data.aws_region.current.name],
+    custom                 = local.is_aws_cn ? null : local.images_custom[data.aws_region.current.name],
   }
   common_tags = merge(
     var.tags, {
