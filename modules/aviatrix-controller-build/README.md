@@ -21,6 +21,8 @@ The following variables are required:
 
 The following variables are optional:
 
+> **NOTE:** Only BYOL is available for AWS China.
+
 | Variable  | Description | Default |
 | --------- | ----------- | ------- |
 | availability_zone | Availability zone for subnet and controller instance | "" |

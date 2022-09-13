@@ -46,6 +46,8 @@ The following variables are required:
 
 The following variables are optional:
 
+> **NOTE:** Only BYOL is available for AWS China.
+
 | Variable  | Description | Default |
 | --------- | ----------- | ------- |
 | create_iam_roles | Flag to indicate whether to create IAM roles or not | true |
