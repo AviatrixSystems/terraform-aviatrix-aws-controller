@@ -86,3 +86,4 @@ The following variables are optional:
 | vpc_id | VPC where Aviatrix controller was built |
 | subnet_id | Subnet where Aviatrix controller was built |
 | security_group_id | Controller security group ID |
+| instance_id | Controller instance ID |
