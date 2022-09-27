@@ -52,3 +52,4 @@ The following variables are optional:
 | vpc_id | VPC ID |
 | subnet_id | Subnet ID |
 | security_group_id | Security group ID |
+| instance_id | Controller instance ID |

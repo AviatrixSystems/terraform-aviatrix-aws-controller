@@ -22,3 +22,8 @@ output "security_group_id" {
   value       = module.aviatrix_controller_build.security_group_id
   description = "Security group id used by Aviatrix controller"
 }
+
+output instance_id {
+  value       = module.aviatrix_controller_build.instance_id
+  description = "Controller instance ID"
+}
