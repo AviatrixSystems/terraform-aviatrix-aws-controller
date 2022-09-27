@@ -76,6 +76,7 @@ The following variables are optional:
 | controller_launch_wait_time | Controller launch wait time | 210 |
 | controller_version | Controller version | "latest" |
 | customer_license_id | Customer license ID | "" |
+| private_mode | Flag to enable private_mode. Requires usage of existing VPC with connectivity | false |
 
 ## Outputs
 

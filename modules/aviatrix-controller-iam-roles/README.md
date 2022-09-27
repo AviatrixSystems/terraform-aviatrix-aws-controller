@@ -40,3 +40,4 @@ The following variables are optional:
 | aviatrix_assume_role_policy_arn | Aviatrix assume role policy ARN |
 | aviatrix_app_policy_arn | Aviatrix policy ARN for application |
 | aviatrix_role_ec2_profile_arn | Aviatrix role EC2 profile ARN for application |
+

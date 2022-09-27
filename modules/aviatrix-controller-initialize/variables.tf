@@ -32,6 +32,7 @@ variable "admin_email" {
 variable "admin_password" {
   type        = string
   description = "aviatrix controller admin password"
+  sensitive   = true
 }
 
 variable "access_account_email" {
@@ -66,6 +67,12 @@ variable "app_role_name" {
   type        = string
   description = "APP role name"
   default     = ""
+}
+
+variable "private_mode" {
+  type        = string
+  description = "Enable private mode"
+  default     = false
 }
 
 locals {

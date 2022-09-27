@@ -28,6 +28,7 @@ module "aviatrix_controller_build" {
   termination_protection = var.termination_protection
   incoming_ssl_cidrs     = var.incoming_ssl_cidrs
   tags                   = var.controller_tags
+  private_mode           = var.private_mode
 }
 
 data "aws_caller_identity" "current" {}
@@ -46,6 +47,7 @@ module "aviatrix_controller_initialize" {
   controller_version          = var.controller_version
   ec2_role_name               = local.ec2_role_name
   app_role_name               = local.app_role_name
+  private_mode                = var.private_mode
 
   depends_on = [
     module.aviatrix_controller_build

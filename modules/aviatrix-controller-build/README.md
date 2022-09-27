@@ -42,6 +42,8 @@ The following variables are optional:
 | type | The license type for the Aviatrix controller. Valid values: "Metered", "MeteredPlatinum", "MeteredPlatinumCopilot", "VPNMetered", "BYOL" or "Custom". | "MeteredPlatinumCopilot" |
 | termination_protection | Flag to indicate whether termination protection is enabled for the controller | true |
 | tags | Map of common tags used for controller resources | {} |
+| private_mode | Flag to enable private_mode. Requires usage of existing VPC with connectivity | false |
+
 
 ## Outputs
 

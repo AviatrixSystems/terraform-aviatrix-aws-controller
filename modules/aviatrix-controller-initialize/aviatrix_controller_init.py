@@ -22,6 +22,7 @@ def function_handler(event):
     aviatrix_api_version = event["aviatrix_api_version"]
     aviatrix_api_route = event["aviatrix_api_route"]
     private_ip = event["private_ip"]
+    controller_ip = event["controller_ip"]
     admin_email = event["admin_email"]
     new_admin_password = event["new_admin_password"]
     access_account_email = event["account_email"]
@@ -34,7 +35,7 @@ def function_handler(event):
     customer_license_id = customer_license_id.rstrip()
     customer_license_id = customer_license_id.lstrip()
     api_endpoint_url = (
-            "https://" + public_ip + "/" + aviatrix_api_version + "/" + aviatrix_api_route
+            "https://" + controller_ip + "/" + aviatrix_api_version + "/" + aviatrix_api_route
     )
 
     # Step1. Wait until the rest API service of Aviatrix Controller is up and running
@@ -44,7 +45,7 @@ def function_handler(event):
 
     time.sleep(controller_launch_wait_time)
     wait_until_controller_api_server_is_ready(
-        hostname=public_ip,
+        hostname=controller_ip,
         api_version=aviatrix_api_version,
         api_route=aviatrix_api_route,
         total_wait_time=controller_launch_wait_time,
@@ -131,7 +132,7 @@ def function_handler(event):
         "START: Wait until API server of Aviatrix Controller is up and running after initial setup"
     )
     wait_until_controller_api_server_is_ready(
-        hostname=public_ip,
+        hostname=controller_ip,
         api_version=aviatrix_api_version,
         api_route=aviatrix_api_route,
         total_wait_time=default_wait_time_for_apache_wakeup,
@@ -873,12 +874,19 @@ if __name__ == "__main__":
     ec2_role_name = sys.argv[11]
     app_role_name = sys.argv[12]
     controller_region = sys.argv[13]
+    private_mode = sys.argv[14]
+
+    if private_mode == "true":
+        controller_ip = private_ip
+    else:
+        controller_ip = public_ip
 
     event = {
         "controller_launch_wait_time": int(controller_launch_wait_time),
         "aws_account_id": aws_account_id,
         "public_ip": public_ip,
         "private_ip": private_ip,
+        "controller_ip": controller_ip,
         "aviatrix_api_version": "v1",
         "aviatrix_api_route": "api",
         "admin_email": admin_email,
@@ -898,5 +906,5 @@ if __name__ == "__main__":
         logging.exception("")
     else:
         logging.info(
-            "Aviatrix Controller %s has been initialized successfully", public_ip
+            "Aviatrix Controller %s has been initialized successfully", controller_ip
         )
