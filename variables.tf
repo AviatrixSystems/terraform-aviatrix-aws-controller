@@ -125,12 +125,12 @@ variable "controller_name_prefix" {
 
 variable "type" {
   type        = string
-  description = "Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
-  default     = "MeteredPlatinumCopilot"
+  description = "Type of billing. Only support 'BYOL'."
+  default     = "BYOL"
 
   validation {
-    condition     = contains(["metered", "meteredplatinum", "meteredplatinumcopilot", "vpnmetered", "byol", "custom"], lower(var.type))
-    error_message = "Invalid billing type. Choose 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
+    condition     = contains(["byol"], lower(var.type))
+    error_message = "Invalid billing type. Only support 'BYOL'."
   }
 }
 

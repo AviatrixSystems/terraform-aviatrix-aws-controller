@@ -39,7 +39,7 @@ The following variables are optional:
 | instance_type | The instance type for the controller instance | "t3.large" |
 | name_prefix | A prefix to be added to controller resources | "" |
 | controller_name | Controller name | "AviatrixController" |
-| type | The license type for the Aviatrix controller. Valid values: "Metered", "MeteredPlatinum", "MeteredPlatinumCopilot", "VPNMetered", "BYOL" or "Custom". | "MeteredPlatinumCopilot" |
+| type | The license type for the Aviatrix controller. Only support "BYOL". | "BYOL" |
 | termination_protection | Flag to indicate whether termination protection is enabled for the controller | true |
 | tags | Map of common tags used for controller resources | {} |
 
