@@ -71,7 +71,7 @@ The following variables are optional:
 | instance_type | Controller instance size | "t3.large" |
 | controller_name_prefix | Name prefix for controller resources | "" |
 | controller_name | Controller name | "AviatrixController" |
-| type | Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom' | "MeteredPlatinumCopilot" |
+| type | Type of billing. Only support "BYOL". | "BYOL" |
 | aws_account_id | The AWS account ID | Current caller ID |
 | controller_launch_wait_time | Controller launch wait time | 210 |
 | controller_version | Controller version | "latest" |

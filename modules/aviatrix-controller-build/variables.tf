@@ -94,13 +94,13 @@ variable "name_prefix" {
 }
 
 variable "type" {
-  default     = "MeteredPlatinumCopilot"
+  default     = "BYOL"
   type        = string
-  description = "Type of billing, can be 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
+  description = "Type of billing. Only support 'BYOL'."
 
   validation {
-    condition     = contains(["metered", "meteredplatinum", "meteredplatinumcopilot", "vpnmetered", "byol", "custom"], lower(var.type))
-    error_message = "Invalid billing type. Choose 'Metered', 'MeteredPlatinum', 'MeteredPlatinumCopilot', 'VPNMetered', BYOL' or 'Custom'."
+    condition     = contains(["byol"], lower(var.type))
+    error_message = "Invalid billing type. Only support 'BYOL'."
   }  
 }
 
