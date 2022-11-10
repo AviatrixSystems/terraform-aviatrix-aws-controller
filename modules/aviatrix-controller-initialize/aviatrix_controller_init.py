@@ -121,7 +121,7 @@ def function_handler(event):
         CID=CID,
         target_version=controller_init_version,
     )
-    # verify_aviatrix_api_run_initial_setup(response=response)
+    verify_aviatrix_api_run_initial_setup(response=response)
     logging.info("End: Aviatrix Controller initial setup")
 
     time.sleep(20)
