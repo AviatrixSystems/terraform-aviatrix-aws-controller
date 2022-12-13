@@ -184,6 +184,18 @@ variable "customer_license_id" {
   default     = ""
 }
 
+variable "controller_display_name" {
+  type        = string
+  description = "controller display name"
+  default     = ""
+}
+
+variable "controller_time_zone" {
+  type        = string
+  description = "controller time zone"
+  default     = ""
+}
+
 locals {
   ec2_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_ec2_name : var.ec2_role_name
   app_role_name = var.create_iam_roles ? module.aviatrix_controller_iam_roles[0].aviatrix_role_app_name : var.app_role_name

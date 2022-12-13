@@ -46,8 +46,6 @@ The following variables are required:
 
 The following variables are optional:
 
-> **NOTE:** Only BYOL is available for AWS China.
-
 | Variable  | Description | Default |
 | --------- | ----------- | ------- |
 | create_iam_roles | Flag to indicate whether to create IAM roles or not | true |
@@ -76,6 +74,8 @@ The following variables are optional:
 | controller_launch_wait_time | Controller launch wait time | 210 |
 | controller_version | Controller version | "latest" |
 | customer_license_id | Customer license ID | "" |
+| controller_display_name | Controller name displayed in UI.| "" |
+| controller_time_zone | Controller time zone.| "" |
 
 ## Outputs
 
