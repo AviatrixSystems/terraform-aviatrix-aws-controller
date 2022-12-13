@@ -29,6 +29,8 @@ def function_handler(event):
     customer_license_id = event["customer_license_id"]
     controller_init_version = event["controller_init_version"]
     controller_launch_wait_time = event["controller_launch_wait_time"]
+    controller_display_name = event["controller_display_name"]
+    controller_time_zone = event["controller_time_zone"]
 
     # Reconstruct some parameters
     customer_license_id = customer_license_id.rstrip()
@@ -197,6 +199,30 @@ def function_handler(event):
     )
 
     logging.info("END : Create the Access Account")
+
+    # Step12. Set Controller Display Name
+    if controller_display_name != "":
+        logging.info("START : Set Controller Display Name")
+        response = set_controller_name(
+            api_endpoint_url=api_endpoint_url,
+            CID=CID,
+            controller_name=controller_display_name
+        )
+
+        verify_aviatrix_api_set_controller_name(response=response)
+        logging.info("End: Set Controller Display Name")
+
+    # Step13. Set Controller Time Zone
+    if controller_time_zone != "":
+        logging.info("START : Set Controller Time Zone")
+        response = set_controller_time_zone(
+            api_endpoint_url=api_endpoint_url,
+            CID=CID,
+            time_zone=controller_time_zone
+        )
+
+        verify_aviatrix_api_set_controller_time_zone(response=response)
+        logging.info("End: Set Controller Time Zone")
 
 
 def wait_until_controller_api_server_is_ready(
@@ -855,6 +881,100 @@ def verify_aviatrix_api_create_access_account(
 
 # End def verify_aviatrix_api_create_access_account()
 
+def set_controller_name(
+        api_endpoint_url="123.123.123.123/v1/api",
+        CID="ABCD1234",
+        controller_name=""
+):
+    request_method = "POST"
+    data = {
+        "action": "set_controller_name",
+        "CID": CID,
+        "controller_name": controller_name
+    }
+
+    logging.info("API endpoint url: %s", str(api_endpoint_url))
+    logging.info("Request method is: %s", str(request_method))
+    logging.info("Request payload is : %s", str(json.dumps(obj=data, indent=4)))
+
+    response = send_aviatrix_api(
+        api_endpoint_url=api_endpoint_url,
+        request_method=request_method,
+        payload=data,
+    )
+
+    return response
+
+
+def verify_aviatrix_api_set_controller_name(response=None):
+    py_dict = response.json()
+    logging.info("Aviatrix API response is %s", str(py_dict))
+
+    response_code = response.status_code
+    if response_code != 200:
+        err_msg = (
+                "Fail to set controller name, the response code is : "
+                + str(response_code)
+                + ", which is not 200"
+        )
+        raise AviatrixException(message=err_msg)
+
+    api_return_boolean = py_dict["return"]
+    if api_return_boolean is not True:
+        err_msg = (
+                "Fail to set controller name. API response is :"
+                + str(py_dict)
+        )
+        raise AviatrixException(message=err_msg)
+
+
+def set_controller_time_zone(
+        api_endpoint_url="123.123.123.123/v1/api",
+        CID="ABCD1234",
+        time_zone=""
+):
+    request_method = "POST"
+    data = {
+        "action": "set_controller_time_zone",
+        "CID": CID,
+        "time_zone": time_zone
+    }
+
+    logging.info("API endpoint url: %s", str(api_endpoint_url))
+    logging.info("Request method is: %s", str(request_method))
+    logging.info("Request payload is : %s", str(json.dumps(obj=data, indent=4)))
+
+    response = send_aviatrix_api(
+        api_endpoint_url=api_endpoint_url,
+        request_method=request_method,
+        payload=data,
+    )
+
+    return response
+
+
+def verify_aviatrix_api_set_controller_time_zone(response=None):
+    py_dict = response.json()
+    logging.info("Aviatrix API response is %s", str(py_dict))
+
+    response_code = response.status_code
+    if response_code != 200:
+        err_msg = (
+                "Fail to set controller time zone, the response code is : "
+                + str(response_code)
+                + ", which is not 200"
+        )
+        raise AviatrixException(message=err_msg)
+
+    api_return_boolean = py_dict["return"]
+    if api_return_boolean is not True:
+        err_msg = (
+                "Fail to set controller time zone. API response is :"
+                + str(py_dict)
+        )
+        raise AviatrixException(message=err_msg)
+
+
 if __name__ == "__main__":
     logging.basicConfig(
         format="%(asctime)s aviatrix-aws-function--- %(message)s", level=logging.INFO
@@ -873,6 +993,8 @@ if __name__ == "__main__":
     ec2_role_name = sys.argv[11]
     app_role_name = sys.argv[12]
     controller_region = sys.argv[13]
+    controller_display_name = sys.argv[14]
+    controller_time_zone = sys.argv[15]
 
     event = {
         "controller_launch_wait_time": int(controller_launch_wait_time),
@@ -890,6 +1012,8 @@ if __name__ == "__main__":
         "ec2_role_name": ec2_role_name,
         "app_role_name": app_role_name,
         "controller_region": controller_region,
+        "controller_dispaly_name": controller_display_name,
+        "controller_time_zone": controller_time_zone
     }
 
     try:

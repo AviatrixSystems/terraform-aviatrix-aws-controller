@@ -68,6 +68,18 @@ variable "app_role_name" {
   default     = ""
 }
 
+variable "controller_display_name" {
+  type        = string
+  description = "controller display name"
+  default     = ""
+}
+
+variable "controller_time_zone" {
+  type        = string
+  description = "controller time zone"
+  default     = ""
+}
+
 locals {
   aws_account_id = var.aws_account_id == "" ? data.aws_caller_identity.current.account_id : var.aws_account_id
   ec2_role_name  = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"

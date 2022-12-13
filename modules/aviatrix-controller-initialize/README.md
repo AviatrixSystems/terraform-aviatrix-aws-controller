@@ -33,3 +33,5 @@ The following variables are optional:
 | controller_version | The controller version | "latest" |
 | ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
 | app_role_name | APP role name | "aviatrix-role-app" |
+| controller_display_name | Controller name displayed in UI.| "" |
+| controller_time_zone | Controller time zone.| "" |
