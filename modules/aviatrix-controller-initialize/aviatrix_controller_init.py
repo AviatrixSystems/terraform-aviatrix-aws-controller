@@ -54,7 +54,7 @@ def function_handler(event):
 
     # Step2. Login Aviatrix Controller with username: Admin and password: private ip address and verify login
     logging.info("START: Login Aviatrix Controller as admin using private ip address")
-    response = login(
+    response, _ = login(
         api_endpoint_url=api_endpoint_url,
         username="admin",
         password=private_ip,
@@ -104,7 +104,7 @@ def function_handler(event):
 
     # Step6. Login Aviatrix Controller as admin with new password
     logging.info("Start: Login in as admin with new password")
-    response = login(
+    response, _ = login(
         api_endpoint_url=api_endpoint_url,
         username="admin",
         password=new_admin_password,
@@ -114,7 +114,18 @@ def function_handler(event):
     verify_aviatrix_api_set_admin_password(response=response)
     logging.info("End: Login as admin with new password")
 
-    # Step7. Initial Setup for Aviatrix Controller by Invoking Aviatrix API
+    # Step7. Set Aviatrix Customer ID
+    logging.info("START: Set Aviatrix Customer ID by invoking aviatrix API")
+    response = set_aviatrix_customer_id(
+        api_endpoint_url=api_endpoint_url,
+        CID=CID,
+        customer_id=customer_license_id,
+    )
+    py_dict = response.json()
+    logging.info("Aviatrix API response is : " + str(py_dict))
+    logging.info("END: Set Aviatrix Customer ID by invoking aviatrix API")
+
+    # Step8. Initial Setup for Aviatrix Controller by Invoking Aviatrix API
     logging.info("Start: Aviatrix Controller initial setup")
     response = run_initial_setup(
         api_endpoint_url=api_endpoint_url,
@@ -126,7 +137,7 @@ def function_handler(event):
 
     time.sleep(20)
 
-    # Step8. Wait until apache server of controller is up and running after initial setup
+    # Step9. Wait until apache server of controller is up and running after initial setup
     logging.info(
         "START: Wait until API server of Aviatrix Controller is up and running after initial setup"
     )
@@ -141,9 +152,9 @@ def function_handler(event):
         "End: Wait until API server of Aviatrix Controller is up ans running after initial setup"
     )
 
-    # Step9. Re-login
+    # Step10. Re-login
     logging.info("START: Re-login")
-    response = login(
+    response, api_token = login(
         api_endpoint_url=api_endpoint_url,
         username="admin",
         password=new_admin_password,
@@ -152,16 +163,8 @@ def function_handler(event):
     CID = response.json()["CID"]
     logging.info("END: Re-login")
 
-    # Step10. Set Aviatrix Customer ID
-    logging.info("START: Set Aviatrix Customer ID by invoking aviatrix API")
-    response = set_aviatrix_customer_id(
-        api_endpoint_url=api_endpoint_url,
-        CID=CID,
-        customer_id=customer_license_id,
-    )
-    py_dict = response.json()
-    logging.info("Aviatrix API response is : " + str(py_dict))
-    logging.info("END: Set Aviatrix Customer ID by invoking aviatrix API")
+    if api_token != "":
+        api_endpoint_url = api_endpoint_url[:-5] + "2" + api_endpoint_url[-4:]
 
     # Step11. Create Access Account
     logging.info("START : Create the Access Accounts")
@@ -189,6 +192,7 @@ def function_handler(event):
         is_iam_role_based="true",
         app_role_arn=app_role_arn,
         ec2_role_arn=ec2_role_arn,
+        api_token=api_token,
     )
 
     verify_aviatrix_api_create_access_account(
@@ -211,7 +215,11 @@ def wait_until_controller_api_server_is_ready(
     # invoke the aviatrix api with a non-existed api
     # to resolve the issue where server status code is 200 but response message is "Valid action required: login"
     # which means backend is not ready yet
-    payload = {"action": "login", "username": "test", "password": "test"}
+    payload = {
+        "action": "login",
+        "username": "test",
+        "password": "test"
+    }
     remaining_wait_time = total_wait_time
 
     """ Variable Description: (time_spent_for_requests_lib_timeout)
@@ -330,7 +338,11 @@ def login(
         hide_password=True,
 ):
     request_method = "POST"
-    data = {"action": "login", "username": username, "password": password}
+    data = {
+        "action": "login",
+        "username": username,
+        "password": password
+    }
     logging.info("API endpoint url is : %s", api_endpoint_url)
     logging.info("Request method is : %s", request_method)
 
@@ -351,7 +363,28 @@ def login(
         request_method=request_method,
         payload=data,
     )
-    return response
+
+    api_token = ""
+    if not response.json()["return"]:
+        if response.json()["reason"] == "Invalid API token":
+            api_endpoint_url = api_endpoint_url[:-5] + "2" + api_endpoint_url[-4:]
+
+            api_token_resp = send_aviatrix_api(
+                api_endpoint_url=api_endpoint_url,
+                request_method="GET",
+                payload={"action": "get_api_token"},
+            )
+
+            api_token = api_token_resp.json()["results"]["api_token"]
+            data["api_token"] = api_token
+
+            response = send_aviatrix_api(
+                api_endpoint_url=api_endpoint_url,
+                request_method=request_method,
+                payload=data,
+            )
+
+    return response, api_token
 
 
 # End def login()
@@ -471,8 +504,13 @@ def has_controller_initialized(
         api_endpoint_url="123.123.123.123/v1/api",
         CID="ABCD1234",
 ):
-    request_method = "GET"
-    data = {"action": "initial_setup", "subaction": "check", "CID": CID}
+    request_method = "POST"
+    data = {
+        "action": "initial_setup",
+        # "check": True,
+        "subaction": "check",
+        "CID": CID
+    }
     logging.info("API endpoint url: %s", str(api_endpoint_url))
     logging.info("Request method is: %s", str(request_method))
     logging.info("Request payload is : %s", str(json.dumps(obj=data, indent=4)))
@@ -501,7 +539,11 @@ def set_admin_email(
         admin_email="avx@aviatrix.com",
 ):
     request_method = "POST"
-    data = {"action": "add_admin_email_addr", "CID": CID, "admin_email": admin_email}
+    data = {
+        "action": "add_admin_email_addr",
+        "CID": CID,
+        "admin_email": admin_email
+    }
 
     logging.info("API endpoint url: %s", str(api_endpoint_url))
     logging.info("Request method is: %s", str(request_method))
@@ -656,7 +698,12 @@ def run_initial_setup(
     # Step1 : Check if the controller has been already initialized
     #       --> yes
     #       --> no --> run init setup (upgrading to the latest controller version)
-    data = {"action": "initial_setup", "CID": CID, "subaction": "check"}
+    data = {
+        "action": "initial_setup",
+        "subaction": "check",
+        # "check": True,
+        "CID": CID
+    }
     logging.info("Check if the initial setup has been already done or not")
     response = send_aviatrix_api(
         api_endpoint_url=api_endpoint_url,
@@ -672,9 +719,10 @@ def run_initial_setup(
     # The initial setup has not been done yet
     data = {
         "action": "initial_setup",
-        "CID": CID,
-        "target_version": target_version,
         "subaction": "run",
+        # "run": True,
+        "target_version": target_version,
+        "CID": CID,
     }
 
     logging.info("API endpoint url: %s", str(api_endpoint_url))
@@ -738,7 +786,11 @@ def set_aviatrix_customer_id(
         customer_id="aviatrix-1234567.89",
 ):
     request_method = "POST"
-    data = {"action": "setup_customer_id", "CID": CID, "customer_id": customer_id}
+    data = {
+        "action": "setup_customer_id",
+        "CID": CID,
+        "customer_id": customer_id
+    }
 
     logging.info("API endpoint url: %s", str(api_endpoint_url))
     logging.info("Request method is: %s", str(request_method))
@@ -766,6 +818,7 @@ def create_access_account(
         is_iam_role_based="true",
         app_role_arn="arn:aws:iam::123456789012:role/aviatrix-role-app",
         ec2_role_arn="arn:aws:iam::123456789012:role/aviatrix-role-ec2",
+        api_token="",
 ):
     request_method = "POST"
     if cloud_type == "1":
@@ -794,6 +847,9 @@ def create_access_account(
             "aws_china_role_arn": app_role_arn,
             "aws_china_role_ec2": ec2_role_arn
         }
+
+    if api_token != "":
+        data["api_token"] = api_token
 
     payload_with_hidden_password = dict(data)
     payload_with_hidden_password["account_password"] = "************"

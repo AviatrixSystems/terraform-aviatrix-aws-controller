@@ -9,13 +9,17 @@ class AviatrixException(Exception):
 
 
 def disable_controller_sg_mgmt(
-        api_endpoint_url,
-        CID
+        api_endpoint_url="https://123.123.123.123/v1/api",
+        CID="ABCD1234",
+        api_token=""
 ):
     data = {
         "action": "disable_controller_security_group_management",
         "CID": CID
     }
+
+    if api_token != "":
+        data["api_token"] = api_token
 
     response = send_aviatrix_api(
         api_endpoint_url=api_endpoint_url,
@@ -37,7 +41,7 @@ def function_handler(event):
 
     logging.info("CLEANING UP START: Disable the controller security group management.")
 
-    response = login(
+    response, api_token = login(
         api_endpoint_url=api_endpoint_url,
         username="admin",
         password=admin_password,
@@ -46,9 +50,13 @@ def function_handler(event):
     verify_aviatrix_api_response_login(response=response)
     CID = response.json()["CID"]
 
+    if api_token != "":
+        api_endpoint_url = api_endpoint_url[:-5] + "2" + api_endpoint_url[-4:]
+
     response = disable_controller_sg_mgmt(
         api_endpoint_url=api_endpoint_url,
-        CID=CID
+        CID=CID,
+        api_token=api_token
     )
 
     py_dict = response.json()
