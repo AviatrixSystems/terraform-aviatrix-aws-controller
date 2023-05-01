@@ -116,7 +116,7 @@ data "aws_availability_zones" "all" {}
 
 data "aws_ec2_instance_type_offering" "offering" {
   for_each = {
-    use1a = "us-east-1a"
+    us-east-1a = "us-east-1a"
   }
   
   filter {
