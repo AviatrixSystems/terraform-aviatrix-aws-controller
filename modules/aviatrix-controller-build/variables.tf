@@ -130,6 +130,10 @@ data "aws_ec2_instance_type_offering" "offering" {
   location_type = "availability-zone"
 
   preferred_instance_types = [var.instance_type, "t3.micro", "t2.micro"]
+  
+  depends_on = [
+    data.aws_availability_zones.all
+  ]
 }
 
 locals {
