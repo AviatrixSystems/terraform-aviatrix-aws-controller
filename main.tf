@@ -11,6 +11,7 @@ module "aviatrix_controller_iam_roles" {
 module "aviatrix_controller_build" {
   source                 = "./modules/aviatrix-controller-build"
   availability_zone      = var.availability_zone
+  availability_zones     = var.availability_zones
   vpc_cidr               = var.vpc_cidr
   subnet_cidr            = var.subnet_cidr
   use_existing_vpc       = var.use_existing_vpc
