@@ -115,6 +115,8 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "all" {}
 
 data "aws_ec2_instance_type_offering" "offering" {
+  for_each = toset(data.aws_availability_zones.all.names)
+  
   filter {
     name   = "instance-type"
     values = ["t2.micro", "t3.micro", var.instance_type]
@@ -122,7 +124,7 @@ data "aws_ec2_instance_type_offering" "offering" {
 
   filter {
     name   = "location"
-    values = [for zone_name in data.aws_availability_zones.all.names: "${zone_name}"]
+    values = [each.key]
   }
 
   location_type = "availability-zone"
