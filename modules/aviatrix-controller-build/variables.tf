@@ -111,6 +111,7 @@ variable "controller_name" {
 }
 
 variable "availability_zones" {
+  type = list(string)
   default = ["us-east-1a"]
 }
 
