@@ -110,12 +110,14 @@ variable "controller_name" {
   default     = ""
 }
 
+variable "availability_zones" {
+  default = ["us-east-1a"]
+}
+
 data "aws_region" "current" {}
 
-data "aws_availability_zones" "all" {}
-
 data "aws_ec2_instance_type_offering" "offering" {
-  for_each = try(toset(data.aws_availability_zones.all.names), tomap({}))
+  for_each = toset(var.availability_zones)
 
   filter {
     name   = "instance-type"
@@ -130,10 +132,6 @@ data "aws_ec2_instance_type_offering" "offering" {
   location_type = "availability-zone"
 
   preferred_instance_types = [var.instance_type, "t3.micro", "t2.micro"]
-  
-  depends_on = [
-    data.aws_availability_zones.all
-  ]
 }
 
 locals {
