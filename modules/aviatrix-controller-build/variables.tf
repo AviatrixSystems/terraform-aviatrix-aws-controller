@@ -112,16 +112,12 @@ variable "controller_name" {
 
 data "aws_region" "current" {}
 
-data "aws_availability_zones" "all" {
-  all_availability_zones = true
-  filter {
-    name = "zone-type"
-    values = ["availability-zone"]
-  }
-}
+data "aws_availability_zones" "all" {}
 
 data "aws_ec2_instance_type_offering" "offering" {
-  for_each = toset(data.aws_availability_zones.all.names)
+  for_each = {
+    a = "us-east-1"
+  }
   
   filter {
     name   = "instance-type"
