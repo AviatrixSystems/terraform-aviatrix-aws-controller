@@ -178,6 +178,11 @@ variable "access_account_name" {
   description = "Access account name"
 }
 
+variable "availability_zones" {
+  type = list(string)
+  default = ["us-east-1a"]
+}
+
 variable "customer_license_id" {
   type        = string
   description = "aviatrix customer license id"
