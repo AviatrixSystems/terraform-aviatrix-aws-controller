@@ -115,9 +115,7 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "all" {}
 
 data "aws_ec2_instance_type_offering" "offering" {
-  for_each = {
-    us-east-1a = "us-east-1a"
-  }
+  for_each = toset(local.zone_names)
   
   filter {
     name   = "instance-type"
@@ -135,6 +133,7 @@ data "aws_ec2_instance_type_offering" "offering" {
 }
 
 locals {
+  zone_names                    = data.aws_availability_zones.all.names
   name_prefix                   = var.name_prefix != "" ? "${var.name_prefix}_" : ""
   controller_name               = var.controller_name != "" ? var.controller_name : "${local.name_prefix}AviatrixController"
   key_pair_name                 = var.key_pair_name != "" ? var.key_pair_name : "controller_kp"
