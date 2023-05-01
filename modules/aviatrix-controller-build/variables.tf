@@ -115,7 +115,7 @@ data "aws_region" "current" {}
 data "aws_availability_zones" "all" {}
 
 data "aws_ec2_instance_type_offering" "offering" {
-  for_each = toset(["us-east-1a"]
+  for_each = toset(["us-east-1a"])
 
   filter {
     name   = "instance-type"
