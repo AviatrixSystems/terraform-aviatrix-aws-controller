@@ -112,6 +112,26 @@ variable "controller_name" {
 
 data "aws_region" "current" {}
 
+data "aws_availability_zones" "all" {}
+
+data "aws_ec2_instance_type_offering" "offering" {
+  for_each = toset(["us-east-1a"]
+
+  filter {
+    name   = "instance-type"
+    values = ["t2.micro", "t3.micro", var.instance_type]
+  }
+
+  filter {
+    name   = "location"
+    values = [each.value]
+  }
+
+  location_type = "availability-zone"
+
+  preferred_instance_types = [var.instance_type, "t3.micro", "t2.micro"]
+}
+
 locals {
   name_prefix                   = var.name_prefix != "" ? "${var.name_prefix}_" : ""
   controller_name               = var.controller_name != "" ? var.controller_name : "${local.name_prefix}AviatrixController"
@@ -125,7 +145,7 @@ locals {
   images_vpnmetered             = jsondecode(data.http.avx_iam_id.response_body).VPNMetered
   images_custom                 = jsondecode(data.http.avx_iam_id.response_body).Custom
   ami_id                        = lookup(local.ami_id_map, lower(var.type), null)
-  default_az                    = "us-east-1a"
+  default_az                    = keys({ for az, details in data.aws_ec2_instance_type_offering.offering : az => details.instance_type if details.instance_type == var.instance_type })[0]
   availability_zone             = var.availability_zone != "" ? var.availability_zone : local.default_az
 
   ami_id_map = {
