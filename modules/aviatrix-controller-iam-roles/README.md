@@ -21,22 +21,22 @@ The following variables are optional:
 
 > **NOTE:** If customized **ec2_role_name** and **app_role_name** are used, **name_prefix** will be ignored.
 
-| Variable  | Description | Default |
-| --------- | ----------- | ------- |
-| name_prefix | A prefix to be added to the default role names | "" |
-| ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
-| app_role_name | APP role name | "aviatrix-role-app" |
-| secondary_account_ids | A list of secondary AWS account IDs. ONLY use this parameter if this Terraform module is applied on the AWS account of your controller | [] |
-| external_controller_account_id | The AWS account ID where the Aviatrix Controller was/will be launched. This is only required if you are creating roles for the secondary account different from the account where controller was/will be launched. DO NOT use this parameter if this Terraform module is applied on the AWS account of your controller. | "" |
+| Variable                       | Description                                                                                                                                                                                                                                                                                                             | Default             |
+|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------|
+| name_prefix                    | A prefix to be added to the default role names                                                                                                                                                                                                                                                                          | ""                  |
+| ec2_role_name                  | EC2 role name                                                                                                                                                                                                                                                                                                           | "aviatrix-role-ec2" |
+| app_role_name                  | APP role name                                                                                                                                                                                                                                                                                                           | "aviatrix-role-app" |
+| secondary_account_ids          | A list of secondary AWS account IDs. ONLY use this parameter if this Terraform module is applied on the AWS account of your controller                                                                                                                                                                                  | []                  |
+| external_controller_account_id | The AWS account ID where the Aviatrix Controller was/will be launched. This is only required if you are creating roles for the secondary account different from the account where controller was/will be launched. DO NOT use this parameter if this Terraform module is applied on the AWS account of your controller. | ""                  |
 
 ## Outputs
-| Variable  | Description |
-| --------- | ----------- |
-| aws_account_id | AWS account ID |
-| aviatrix_role_ec2_name | Aviatrix role name for EC2 |
-| aviatrix_role_ec2_arn | Aviatrix role ARN for EC2 |
-| aviatrix_role_app_name | Aviatrix role name for application |
-| aviatrix_role_app_arn | Aviatrix role ARN for application |
-| aviatrix_assume_role_policy_arn | Aviatrix assume role policy ARN |
-| aviatrix_app_policy_arn | Aviatrix policy ARN for application |
-| aviatrix_role_ec2_profile_arn | Aviatrix role EC2 profile ARN for application |
+| Variable                        | Description                                   |
+|---------------------------------|-----------------------------------------------|
+| aws_account_id                  | AWS account ID                                |
+| aviatrix_role_ec2_name          | Aviatrix role name for EC2                    |
+| aviatrix_role_ec2_arn           | Aviatrix role ARN for EC2                     |
+| aviatrix_role_app_name          | Aviatrix role name for application            |
+| aviatrix_role_app_arn           | Aviatrix role ARN for application             |
+| aviatrix_assume_role_policy_arn | Aviatrix assume role policy ARN               |
+| aviatrix_app_policy_arn         | Aviatrix policy ARN for application           |
+| aviatrix_role_ec2_profile_arn   | Aviatrix role EC2 profile ARN for application |

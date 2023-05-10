@@ -14,22 +14,22 @@ This Terraform module initializes a newly created Aviatrix Controller by running
 
 The following variables are required:
 
-| Variable  | Description |
-| --------- | ----------- |
-| public_ip | The Controller's public IP address |
-| private_ip | The Controller's private IP address |
-| admin_email | The administrator's email address |
-| admin_password | The administrator's password |
-| access_account_name | Access account name |
-| access_account_email | Access account email |
+| Variable             | Description                         |
+|----------------------|-------------------------------------|
+| public_ip            | The Controller's public IP address  |
+| private_ip           | The Controller's private IP address |
+| admin_email          | The administrator's email address   |
+| admin_password       | The administrator's password        |
+| access_account_name  | Access account name                 |
+| access_account_email | Access account email                |
 
 The following variables are optional:
 
-| Variable  | Description | Default |
-| --------- | ----------- | ------- |
-| aws_account_id | The AWS account ID | Current caller ID |
-| controller_launch_wait_time | Time in second to wait for controller to be up | 210 |
-| customer_license_id |The customer license ID. Required if using a BYOL controller.| "" |
-| controller_version | The controller version | "latest" |
-| ec2_role_name | EC2 role name | "aviatrix-role-ec2" |
-| app_role_name | APP role name | "aviatrix-role-app" |
+| Variable                    | Description                                                   | Default             |
+|-----------------------------|---------------------------------------------------------------|---------------------|
+| aws_account_id              | The AWS account ID                                            | Current caller ID   |
+| controller_launch_wait_time | Time in second to wait for controller to be up                | 210                 |
+| customer_license_id         | The customer license ID. Required if using a BYOL controller. | ""                  |
+| controller_version          | The controller version                                        | "latest"            |
+| ec2_role_name               | EC2 role name                                                 | "aviatrix-role-ec2" |
+| app_role_name               | APP role name                                                 | "aviatrix-role-app" |

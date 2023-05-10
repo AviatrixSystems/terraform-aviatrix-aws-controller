@@ -28,6 +28,8 @@ module "aviatrix_controller_build" {
   termination_protection = var.termination_protection
   incoming_ssl_cidrs     = var.incoming_ssl_cidrs
   tags                   = var.controller_tags
+  root_volume_encrypted  = var.root_volume_encrypted
+  root_volume_kms_key_id = var.root_volume_kms_key_id
 }
 
 data "aws_caller_identity" "current" {}

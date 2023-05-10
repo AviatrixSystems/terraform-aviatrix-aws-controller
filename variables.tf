@@ -117,6 +117,18 @@ variable "instance_type" {
   default     = "t3.large"
 }
 
+variable "root_volume_encrypted" {
+  type        = bool
+  description = "Whether the root volume is encrypted"
+  default     = true
+}
+
+variable "root_volume_kms_key_id" {
+  type        = string
+  description = "ARN for the key used to encrypt the root volume"
+  default     = ""
+}
+
 variable "controller_name_prefix" {
   type        = string
   description = "Additional name prefix for your environment resources"
