@@ -113,7 +113,7 @@ variable "controller_name" {
 variable "root_volume_encrypted" {
   type        = bool
   description = "Whether the root volume is encrypted"
-  default     = false
+  default     = true
 }
 
 variable "root_volume_kms_key_id" {

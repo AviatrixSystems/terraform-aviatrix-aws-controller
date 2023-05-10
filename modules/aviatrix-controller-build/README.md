@@ -41,7 +41,7 @@ The following variables are optional:
 | type                   | The license type for the Aviatrix controller. Only support "BYOL".                                                                                                                                                               | "BYOL"               |
 | termination_protection | Flag to indicate whether termination protection is enabled for the controller                                                                                                                                                    | true                 |
 | tags                   | Map of common tags used for controller resources                                                                                                                                                                                 | {}                   |
-| root_volume_encrypted  | Flag to indicate whether encryption is enabled for the hard disk for the controller instance                                                                                                                                     | false                |
+| root_volume_encrypted  | Flag to indicate whether encryption is enabled for the hard disk for the controller instance                                                                                                                                     | true                 |
 | root_volume_kms_key_id | The KMS key ID/ARN for the key used to encrypt the disk if encryption is used for the controller disk. Optional even if root_volume_encrypted is true. Example: arn:aws:kms:us-west-2:012xxxx:key/xxxxx-xxxx-xxxx-xxxx-xxxxxxxxx | ""                   |
 
 ## Outputs
