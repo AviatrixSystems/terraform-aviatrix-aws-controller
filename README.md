@@ -1,7 +1,7 @@
 # Launch an Aviatrix Controller in AWS
 
 ## Description
-This Terraform module allows you to launch an Aviatrix Controller in AWS and create an access account.
+This Terraform module allows you to launch an Aviatrix Controller in AWS and create an access account. This module does not work from a Windows shell.
 
 ## Usage examples
 
