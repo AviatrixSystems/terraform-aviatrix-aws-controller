@@ -160,7 +160,7 @@ variable "admin_email" {
 variable "admin_password" {
   type        = string
   description = "aviatrix controller admin password"
-  sensitive = true
+#   sensitive = true
 }
 
 variable "access_account_email" {
