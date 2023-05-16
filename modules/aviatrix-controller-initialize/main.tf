@@ -12,7 +12,7 @@ locals {
 
 resource "null_resource" "run_script" {
   triggers = {
-    argument_destroy = local.argument_destroy
+    time = timestamp()# argument_destroy = local.argument_destroy
   }
 
   provisioner local-exec {
