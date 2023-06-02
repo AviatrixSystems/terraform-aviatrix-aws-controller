@@ -114,18 +114,7 @@ def function_handler(event):
     verify_aviatrix_api_set_admin_password(response=response)
     logging.info("End: Login as admin with new password")
 
-    # Step7. Set Aviatrix Customer ID
-    logging.info("START: Set Aviatrix Customer ID by invoking aviatrix API")
-    response = set_aviatrix_customer_id(
-        api_endpoint_url=api_endpoint_url,
-        CID=CID,
-        customer_id=customer_license_id,
-    )
-    py_dict = response.json()
-    logging.info("Aviatrix API response is : " + str(py_dict))
-    logging.info("END: Set Aviatrix Customer ID by invoking aviatrix API")
-
-    # Step8. Initial Setup for Aviatrix Controller by Invoking Aviatrix API
+    # Step7. Initial Setup for Aviatrix Controller by Invoking Aviatrix API
     logging.info("Start: Aviatrix Controller initial setup")
     response = run_initial_setup(
         api_endpoint_url=api_endpoint_url,
@@ -137,7 +126,7 @@ def function_handler(event):
 
     time.sleep(20)
 
-    # Step9. Wait until apache server of controller is up and running after initial setup
+    # Step8. Wait until apache server of controller is up and running after initial setup
     logging.info(
         "START: Wait until API server of Aviatrix Controller is up and running after initial setup"
     )
@@ -152,7 +141,7 @@ def function_handler(event):
         "End: Wait until API server of Aviatrix Controller is up ans running after initial setup"
     )
 
-    # Step10. Re-login
+    # Step9. Re-login
     logging.info("START: Re-login")
     response, api_token = login(
         api_endpoint_url=api_endpoint_url,
@@ -165,6 +154,17 @@ def function_handler(event):
 
     if api_token != "":
         api_endpoint_url = api_endpoint_url[:-5] + "2" + api_endpoint_url[-4:]
+
+    # Step10. Set Aviatrix Customer ID
+    logging.info("START: Set Aviatrix Customer ID by invoking aviatrix API")
+    response = set_aviatrix_customer_id(
+        api_endpoint_url=api_endpoint_url,
+        CID=CID,
+        customer_id=customer_license_id,
+    )
+    py_dict = response.json()
+    logging.info("Aviatrix API response is : " + str(py_dict))
+    logging.info("END: Set Aviatrix Customer ID by invoking aviatrix API")
 
     # Step11. Create Access Account
     logging.info("START : Create the Access Accounts")
