@@ -150,12 +150,12 @@ locals {
   key_pair_name                 = var.key_pair_name != "" ? var.key_pair_name : "controller_kp"
   ec2_role_name                 = var.ec2_role_name != "" ? var.ec2_role_name : "aviatrix-role-ec2"
   is_aws_cn                     = element(split("-", data.aws_region.current.name), 0) == "cn" ? true : false
-  images_byol                   = jsondecode(data.http.avx_iam_id.response_body).BYOL
-  images_metered                = jsondecode(data.http.avx_iam_id.response_body).Metered
-  images_meteredplatinum        = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinum
-  images_meteredplatinumcopilot = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinumCopilot
-  images_vpnmetered             = jsondecode(data.http.avx_iam_id.response_body).VPNMetered
-  images_custom                 = jsondecode(data.http.avx_iam_id.response_body).Custom
+  images_byol                   = jsondecode(data.http.avx_ami_id.response_body).BYOL
+  images_metered                = jsondecode(data.http.avx_ami_id.response_body).Metered
+  images_meteredplatinum        = jsondecode(data.http.avx_ami_id.response_body).MeteredPlatinum
+  images_meteredplatinumcopilot = jsondecode(data.http.avx_ami_id.response_body).MeteredPlatinumCopilot
+  images_vpnmetered             = jsondecode(data.http.avx_ami_id.response_body).VPNMetered
+  images_custom                 = jsondecode(data.http.avx_ami_id.response_body).Custom
   ami_id                        = lookup(local.ami_id_map, lower(var.type), null)
   default_az                    = keys({ for az, details in data.aws_ec2_instance_type_offering.offering : az => details.instance_type if details.instance_type == var.instance_type })[0]
   availability_zone             = var.availability_zone != "" ? var.availability_zone : local.default_az
@@ -175,8 +175,8 @@ locals {
   })
 }
 
-data "http" "avx_iam_id" {
-  url = "https://s3-us-west-2.amazonaws.com/aviatrix-download/AMI_ID/ami_id.json"
+data "http" "avx_ami_id" {
+  url = "https://release.prod.sre.aviatrix.com/image-details/aws_image_details.json"
   request_headers = {
     "Accept" = "application/json"
   }

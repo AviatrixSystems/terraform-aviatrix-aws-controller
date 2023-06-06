@@ -93,8 +93,8 @@ resource "aws_security_group_rule" "egress_rule" {
 }
 
 resource "aws_eip" "controller_eip" {
-  vpc   = true
-  tags  = local.common_tags
+  domain = "vpc"
+  tags   = local.common_tags
 }
 
 resource "aws_eip_association" "eip_assoc" {
