@@ -176,7 +176,7 @@ locals {
 }
 
 data "http" "avx_ami_id" {
-  url = "https://release.prod.sre.aviatrix.com/image-details/aws_image_details.json"
+  url = "https://release.prod.sre.aviatrix.com/image-details/aws_controller_image_details.json"
   request_headers = {
     "Accept" = "application/json"
   }
