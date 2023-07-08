@@ -176,8 +176,8 @@ locals {
 }
 
 data "http" "avx_ami_id" {
-  url      = "https://release.prod.sre.aviatrix.com/image-details/aws_controller_image_details.json"
-  insecure = true
+  url = "https://cdn.prod.sre.aviatrix.com/image-details/aws_controller_image_details.json"
+
   request_headers = {
     "Accept" = "application/json"
   }
