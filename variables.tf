@@ -129,8 +129,8 @@ variable "type" {
   default     = "BYOL"
 
   validation {
-    condition     = contains(["byol"], lower(var.type))
-    error_message = "Invalid billing type. Only support 'BYOL'."
+    condition     = contains(["byol", "unified"], lower(var.type))
+    error_message = "Invalid billing type. Only support 'BYOL, Unified'."
   }
 }
 
@@ -160,7 +160,7 @@ variable "admin_email" {
 variable "admin_password" {
   type        = string
   description = "aviatrix controller admin password"
-#   sensitive = true
+  #   sensitive = true
 }
 
 variable "access_account_email" {
@@ -180,7 +180,7 @@ variable "access_account_name" {
 }
 
 variable "availability_zones" {
-  type = list(string)
+  type    = list(string)
   default = ["us-east-1a"]
 }
 
