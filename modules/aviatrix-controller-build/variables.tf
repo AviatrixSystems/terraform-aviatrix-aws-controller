@@ -101,7 +101,7 @@ variable "type" {
   validation {
     condition     = contains(["byol"], lower(var.type))
     error_message = "Invalid billing type. Only support 'BYOL'."
-  }  
+  }
 }
 
 variable "controller_name" {
@@ -146,6 +146,7 @@ locals {
   images_meteredplatinum        = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinum
   images_meteredplatinumcopilot = jsondecode(data.http.avx_iam_id.response_body).MeteredPlatinumCopilot
   images_vpnmetered             = jsondecode(data.http.avx_iam_id.response_body).VPNMetered
+  images_unified                = jsondecode(data.http.avx_iam_id.response_body).Unified
   images_custom                 = jsondecode(data.http.avx_iam_id.response_body).Custom
   ami_id                        = lookup(local.ami_id_map, lower(var.type), null)
   default_az                    = keys({ for az, details in data.aws_ec2_instance_type_offering.offering : az => details.instance_type if details.instance_type == var.instance_type })[0]
@@ -157,6 +158,7 @@ locals {
     meteredplatinum        = local.is_aws_cn ? null : local.images_meteredplatinum[data.aws_region.current.name],
     meteredplatinumcopilot = local.is_aws_cn ? null : local.images_meteredplatinumcopilot[data.aws_region.current.name],
     vpnmetered             = local.is_aws_cn ? null : local.images_vpnmetered[data.aws_region.current.name],
+    unified                = local.is_aws_cn ? null : local.images_unified[data.aws_region.current.name],
     custom                 = local.is_aws_cn ? null : local.images_custom[data.aws_region.current.name],
   }
   common_tags = merge(
@@ -167,7 +169,7 @@ locals {
 }
 
 data "http" "avx_iam_id" {
-  url = "https://s3-us-west-2.amazonaws.com/aviatrix-download/AMI_ID/ami_id.json"
+  url = "https://aviatrix-s3-public.s3.amazonaws.com/Public/SelfService/ami_id.json"
   request_headers = {
     "Accept" = "application/json"
   }
