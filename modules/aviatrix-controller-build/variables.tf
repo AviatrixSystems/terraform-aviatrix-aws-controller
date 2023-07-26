@@ -96,11 +96,11 @@ variable "name_prefix" {
 variable "type" {
   default     = "BYOL"
   type        = string
-  description = "Type of billing. Only support 'BYOL'."
+  description = "Type of billing. Only support 'BYOL, Unified'."
 
   validation {
-    condition     = contains(["byol"], lower(var.type))
-    error_message = "Invalid billing type. Only support 'BYOL'."
+    condition     = contains(["byol", "unified"], lower(var.type))
+    error_message = "Invalid billing type. Only support 'BYOL, Unified'."
   }
 }
 
@@ -111,7 +111,7 @@ variable "controller_name" {
 }
 
 variable "availability_zones" {
-  type = list(string)
+  type    = list(string)
   default = ["us-east-1a"]
 }
 
