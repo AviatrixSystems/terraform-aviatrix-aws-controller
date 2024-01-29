@@ -42,7 +42,7 @@ module "aviatrix_controller_initialize" {
   private_ip                  = module.aviatrix_controller_build.private_ip
   admin_email                 = var.admin_email
   admin_password              = var.admin_password
-  access_account_email        = var.access_account_name
+  access_account_email        = var.access_account_email
   access_account_name         = var.access_account_name
   customer_license_id         = var.customer_license_id
   controller_version          = var.controller_version
